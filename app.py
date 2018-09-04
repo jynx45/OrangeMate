@@ -3,8 +3,10 @@ from flask import (
     jsonify,
     request,
 )
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
+db = SQLAlchemy(app)
 from model import (
     TimestampMixin,
     User,
@@ -19,6 +21,8 @@ from model import (
 def users():
     if request.method == 'POST':
         user = User(username='admin', email='admin@example.com')
+        db.session.add(user)
+        db.session.commit()
         return jsonify(user)
     else:
         users = User.query.order_by(User.username).all()
