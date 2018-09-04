@@ -1,4 +1,5 @@
 import json
+import uuid
 from flask import (
     Flask,
     jsonify,
@@ -44,3 +45,21 @@ def user_fund(user_id):
         funds = Fund.query.filter_by(user_id=user_id).all()
         return jsonify(funds)
 
+
+def _gen_token():
+    token = str(uuid.uuid4())
+    transactions = TransactionToken.query.filter_by(token_id=token).all()
+    while transactions:
+        token = str(uuid.uuid4())
+        transactions = TransactionToken.query.filter_by(token_id=token).all()
+    return token
+
+
+@app.route("/users/<int:user_id>/transaction", methods=['POST', 'GET'])
+def user_transaction(user_id):
+    if request.method == 'POST':
+        token = _gen_token()
+        transaction_token = TransactionToken(user_id=user_id, token_id=token, used=False)
+        db.session.add(transaction_token)
+        db.session.commit()
+        return jsonify(transaction_token)

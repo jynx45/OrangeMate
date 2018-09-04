@@ -45,8 +45,16 @@ class Fund(TimestampMixin, db.Model, ModelMixin):
     transaction_type = db.Column(db.String(120), nullable=False)
 
 
-class TransactionToken(TimestampMixin, db.Model):
+class TransactionToken(TimestampMixin, db.Model, ModelMixin):
     id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('user.id'),
+        nullable=False,
+    )
+    user = db.relationship(
+        'User',
+    )
     token_id = db.Column(db.String(80), unique=True, nullable=False)
     used = db.Column(db.Boolean)
 
@@ -59,6 +67,7 @@ class MyJSONEncoder(JSONEncoder):
         try:
             return obj.isoformat()
         except Exception:
+
             return dict(obj)
 
 flask_app.json_encoder = MyJSONEncoder
