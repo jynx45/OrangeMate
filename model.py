@@ -1,5 +1,3 @@
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from app import app as flask_app
 from app import db
@@ -41,7 +39,6 @@ class Fund(TimestampMixin, db.Model, ModelMixin):
     )
     user = db.relationship(
         'User',
-        backref=db.backref('users', lazy=True),
     )
     amount = db.Column(db.Integer, nullable=False)
     source_instrument = db.Column(db.String(120), nullable=False)
