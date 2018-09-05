@@ -16,7 +16,10 @@ def create_order(email, items):
   add_payment_response = _add_payment_method(create_order_response['order']['id'])
   place_order_response = _place_order(create_order_response['order']['id'])
 
-  return place_order_response
+  return {
+    "order_id": place_order_response['id'],
+    "order_url": place_order_response['resource_uri']
+  }
 
 
 def _create_order(items):
