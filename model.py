@@ -59,17 +59,27 @@ class TransactionToken(TimestampMixin, db.Model, ModelMixin):
     used = db.Column(db.Boolean)
 
 
-from flask.json import JSONEncoder
+class Purchase(TimestampMixin, db.Model, ModelMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    transaction_token_id = db.Column(
+        db.Integer,
+        db.ForeignKey('transaction_token.id'),
+        nullable=False,
+    )
+    transaction_token = db.relationship(
+        'TransactionToken',
+    )
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('user.id'),
+        nullable=False,
+    )
+    user = db.relationship(
+        'User',
+    )
+    amount = db.Column(db.Integer, nullable=False)
+    event_id = db.Column(db.Integer, nullable=False)
+    product_id = db.Column(db.Integer, nullable=False)
 
-class MyJSONEncoder(JSONEncoder):
-    def default(self, obj):
-        # Optional: convert datetime objects to ISO format
-        try:
-            return obj.isoformat()
-        except Exception:
-
-            return dict(obj)
-
-flask_app.json_encoder = MyJSONEncoder
 
 db.create_all()
