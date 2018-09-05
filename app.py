@@ -10,6 +10,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask.json import JSONEncoder
 
 app = Flask(__name__)
+app.config.from_pyfile('config.py')
 db = SQLAlchemy(app)
 from model import (
     User,
@@ -17,9 +18,11 @@ from model import (
     TransactionToken,
     Purchase,
 )
+from eb_service import create_order
 
 
 class MyJSONEncoder(JSONEncoder):
+
     def default(self, obj):
         # Optional: convert datetime objects to ISO format
         try:
@@ -119,3 +122,14 @@ def purchase():
             return jsonify({"Error": "You have no funds to complete this purchase."})
     else:
         return jsonify({"Error": "Token does not exist or has already been used."})
+
+
+@app.route("/eb_purchase", methods=['POST'])
+def eb_purchase():
+    if not request.data:
+        return jsonify({'bad request': 'you must specify items'})
+    data = json.loads(request.data.decode('utf-8'))
+    if not 'items' in data or not 'email' in data:
+        return jsonify({'bad request': 'you must specify items'})
+
+    return jsonify(create_order(data['email'], data['items']))
