@@ -95,6 +95,11 @@ def user_transaction_check(user_id, token):
         transaction = TransactionToken.query.filter_by(user_id=user_id, token_id=token).first()
         return jsonify({"token_id": transaction.token_id, "used": transaction.used})
 
+@app.route("/users/<int:user_id>/purchase_history", methods=['GET'])
+def purchase_history(user_id):
+    prev_purchases = Purchase.query.filter_by(user_id=user_id).all()
+    return jsonify(prev_purchases)
+
 @app.route("/purchase", methods=['POST'])
 def purchase():
     data = json.loads(request.data)
