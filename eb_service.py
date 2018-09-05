@@ -24,7 +24,7 @@ def create_order(email, items):
 
 def _create_order(items):
   create_order_data = {
-      "event_id": 49765664442,
+      "event_id": flask_app.config['EVENT_ID'],
       "application": "manual",
   }
   tickets = []
