@@ -28,6 +28,7 @@ class User(TimestampMixin, db.Model, ModelMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
+    balance = db.Column(db.Integer, primary_key=True)
 
 
 class Fund(TimestampMixin, db.Model, ModelMixin):
@@ -79,7 +80,7 @@ class Purchase(TimestampMixin, db.Model, ModelMixin):
     )
     amount = db.Column(db.Integer, nullable=False)
     event_id = db.Column(db.Integer, nullable=False)
-    product_id = db.Column(db.Integer, nullable=False)
+    order_id = db.Column(db.Integer, nullable=False)
 
 
 db.create_all()
